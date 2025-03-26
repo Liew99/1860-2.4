@@ -31,69 +31,75 @@ push argument 1
 return
 
 function Sys.range 2
-push argument 0
-pop pointer 0
-
 push argument 1
 push constant 1
 lt
 if-goto RANGE_RETURN_ZERO
 
-push this 0
+push argument 0
+pop pointer 1
+
+push that 0
 pop local 2
-push this 0
+push that 0
 pop local 3
 
-push pointer 0
 push constant 1
-add
-pop pointer 0
+pop local 4
 
 goto FIND_MIN
 
 label FIND_MIN
-push pointer 0
-push argument 0
+push local 4
 push argument 1
-add
 eq
 if-goto FIND_MAX
 
 push local 2
-push this 0
+push that 0
 call Sys.min 2
 pop local 2
 
-push pointer 0
+push pointer 1
 push constant 1
 add
-pop pointer 0
+pop pointer 1
+
+push local 4
+push constant 1
+add
+pop local 4
 
 goto FIND_MIN
 
 label FIND_MAX
 push argument 0
-pop pointer 0
+pop pointer 1
+push constant 1
+pop local 4
 
 goto MAX_LOOP
 
 label MAX_LOOP
-push pointer 0
-push argument 0
+push local 4
 push argument 1
-add
 eq
 if-goto COMPUTE_RANGE
 
 push local 3
-push this 0
+push that 0
 call Sys.max 2
 pop local 3
 
-push pointer 0
+push pointer 1
 push constant 1
 add
-pop pointer 0
+pop pointer 1
+
+push local 4
+push constant 1
+add
+pop local 4
 
 goto MAX_LOOP
 
@@ -106,8 +112,3 @@ return
 label RANGE_RETURN_ZERO
 push constant 0
 return
-
-function Sys.init 0
-call Sys.range 2
-label WHILE
-goto WHILE
