@@ -112,3 +112,8 @@ return
 label RANGE_RETURN_ZERO
 push constant 0
 return
+
+function Sys.init 0
+call Sys.range 2
+label WHILE
+goto WHILE
