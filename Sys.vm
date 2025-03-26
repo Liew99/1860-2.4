@@ -2,83 +2,113 @@ function Sys.min 0
 push argument 0
 push argument 1
 lt                  
-if-goto MIN_FIRST   
-goto MIN_SECOND     
 
-label MIN_FIRST
-push argument 0     
-return
+if-goto FIRST_MIN
+goto SECOND_MIN
 
-label MIN_SECOND
-push argument 1     
+label FIRST_MIN
+push argument 0    
+return 
+
+label SECOND_MIN
+push argument 1   
 return
 
 function Sys.max 0
 push argument 0
 push argument 1
-gt                  
-if-goto MAX_FIRST   
-goto MAX_SECOND     
+gt
 
-label MAX_FIRST
-push argument 0     
+if-goto FIRST_MAX
+goto SECOND_MAX
+
+label FIRST_MAX
+push argument 0
 return
 
-label MAX_SECOND
-push argument 1     
+label SECOND_MAX
+push argument 1
 return
 
 function Sys.range 2
-push argument 1       
-push constant 1       
-lt                    
-if-goto RANGE_ZERO
+goto RANGE_MIN
 
-label RANGE_ZERO
-push constant 0       
-return
+label RANGE_MIN
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+add
+pop local 0
+push this 0
+pop local 1
+push pointer 0
+push constant 1
+add
+pop pointer 0
 
-label RANGE_INIT
-push argument 0       
-pop pointer 0         
+goto LOOP_MIN
 
-push this 0           
-pop local 0           
-pop local 1           
+label RANGE_MAX
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+add
+pop local 0
+push this 0
+pop local 1
+push pointer 0
+push constant 1
+add
+pop pointer 0
 
-label RANGE_LOOP_MIN_MAX
-push pointer 0        
-push argument 0       
-sub                   
-push argument 1       
-eq                    
-if-goto RANGE_END
+goto LOOP_MAX
 
-push local 0          
-push this 0           
-call Sys.min 2        
-pop local 0           
+label LOOP_MIN
+push pointer 0
+push local 0 
+eq 
+if-goto LOOP_MIN_END
+push local 1
+push this 0
+call Sys.min 2
+pop local 1
+push pointer 0
+push constant 1
+add
+pop pointer 0 
+goto LOOP_MIN
 
-push local 1          
-push this 0           
-call Sys.max 2        
-pop local 1          
+label LOOP_MAX
+push pointer 0
+push local 0 
+eq 
+if-goto LOOP_MAX_END
+push local 1
+push this 0
+call Sys.max 2
+pop local 1
+push pointer 0
+push constant 1
+add
+pop pointer 0 
+goto LOOP_MAX
 
-push pointer 0        
-push constant 1       
-add                   
-pop pointer 0   
+label LOOP_MIN_END
+push local 1
+goto RANGE_MAX
 
-label RANGE_LOOP_MIN_MAX_CONTINUE
-goto RANGE_LOOP_MIN_MAX   
+label LOOP_MAX_END
+push local 1
+goto RANGE_END
 
 label RANGE_END
-push local 1              
-push local 0              
-sub                       
-
-label RANGE_RETURN
+sub
+not 
+push constant 1
+add
 return
 
-        
+    
 
