@@ -1,0 +1,89 @@
+function Sys.min 0
+    push argument 0
+    push argument 1
+    lt                  
+    if-goto MIN_FIRST   
+    goto MIN_SECOND     
+
+label MIN_FIRST
+    push argument 0     
+    return
+
+label MIN_SECOND
+    push argument 1     
+    return
+
+
+function Sys.max 0
+    push argument 0
+    push argument 1
+    gt                  
+    if-goto MAX_FIRST   
+    goto MAX_SECOND     
+
+label MAX_FIRST
+    push argument 0     
+    return
+
+label MAX_SECOND
+    push argument 1     
+    return
+
+
+
+function Sys.range 2
+    // Edge case: If n <= 1, return 0 as range.
+    push argument 1     
+    push constant 1     
+    lt                  
+    if-goto RANGE_ZERO
+
+label RANGE_ZERO
+    push constant 0     
+    return
+
+
+label RANGE_INIT
+    push argument 0     
+    pop pointer 0       
+    
+    push this 0         
+    pop local 0         
+    pop local 1         
+
+label RANGE_LOOP_MIN_MAX
+    // Check if we've reached the end of the array.
+    push pointer 0      
+    push argument 0     
+    add                 
+    push argument 1     
+    eq                  
+    if-goto RANGE_END
+
+    // Update min using Sys.min.
+    push local 0        
+    push this 0        
+    call Sys.min 2      
+    pop local 0         
+
+    // Update max using Sys.max.
+    push local 1        
+    push this 0         
+    call Sys.max 2      
+    pop local 1         
+
+    // Move THIS to next element.
+    push pointer 0      
+    push constant 1     
+    add                 
+    pop pointer 0      
+
+label RANGE_END
+    push local 1        
+    push local 0        
+    
+    sub                 \
+    
+label RANGE_RETURN
+    return              
+
