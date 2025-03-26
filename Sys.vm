@@ -1,119 +1,117 @@
 function Sys.min 0
 push argument 0
 push argument 1
-lt  
+lt
+if-goto LABEL_MIN_FIRST
+goto LABEL_MIN_SECOND
 
-if-goto MIN_CASE_A
-goto MIN_CASE_B
-
-label MIN_CASE_A
-push argument 0    
-return 
-
-label MIN_CASE_B
-push argument 1   
+label LABEL_MIN_FIRST
+push argument 0
 return
+
+label LABEL_MIN_SECOND
+push argument 1
+return
+
 
 function Sys.max 0
 push argument 0
 push argument 1
 gt
+if-goto LABEL_MAX_FIRST
+goto LABEL_MAX_SECOND
 
-if-goto MAX_CASE_A
-goto MAX_CASE_B
-
-label MAX_CASE_A
+label LABEL_MAX_FIRST
 push argument 0
 return
 
-label MAX_CASE_B
+label LABEL_MAX_SECOND
 push argument 1
 return
+
 
 function Sys.range 2
-push argument 1
-push constant 1
-lt
-if-goto RANGE_RETURN_ZERO
+goto LABEL_MIN_SETUP
 
+label LABEL_MIN_SETUP
 push argument 0
-pop pointer 1
-
-push that 0
-pop local 2
-push that 0
-pop local 3
-
-push constant 1
-pop local 4
-
-goto FIND_MIN
-
-label FIND_MIN
-push local 4
+pop pointer 0
+push pointer 0
 push argument 1
-eq
-if-goto FIND_MAX
+add
+pop local 0
+push this 0
+pop local 1
+push pointer 0
+push constant 1
+add
+pop pointer 0
+goto LABEL_MIN_LOOP
 
-push local 2
-push that 0
+label LABEL_MAX_SETUP
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+add
+pop local 0
+push this 0
+pop local 1
+push pointer 0
+push constant 1
+add
+pop pointer 0
+goto LABEL_MAX_LOOP
+
+label LABEL_MIN_LOOP
+push pointer 0
+push local 0
+eq
+if-goto LABEL_MIN_END
+push local 1
+push this 0
 call Sys.min 2
-pop local 2
-
-push pointer 1
+pop local 1
+push pointer 0
 push constant 1
 add
-pop pointer 1
+pop pointer 0
+goto LABEL_MIN_LOOP
 
-push local 4
-push constant 1
-add
-pop local 4
-
-goto FIND_MIN
-
-label FIND_MAX
-push argument 0
-pop pointer 1
-push constant 1
-pop local 4
-
-goto MAX_LOOP
-
-label MAX_LOOP
-push local 4
-push argument 1
+label LABEL_MAX_LOOP
+push pointer 0
+push local 0
 eq
-if-goto COMPUTE_RANGE
-
-push local 3
-push that 0
+if-goto LABEL_MAX_END
+push local 1
+push this 0
 call Sys.max 2
-pop local 3
-
-push pointer 1
+pop local 1
+push pointer 0
 push constant 1
 add
-pop pointer 1
+pop pointer 0
+goto LABEL_MAX_LOOP
 
-push local 4
-push constant 1
-add
-pop local 4
+label LABEL_MIN_END
+push local 1
+goto LABEL_MAX_SETUP
 
-goto MAX_LOOP
+label LABEL_MAX_END
+push local 1
+goto LABEL_RANGE_FINAL
 
-label COMPUTE_RANGE
-push local 3
-push local 2
+label LABEL_RANGE_FINAL
 sub
+not
+push constant 1
+add
 return
 
-label RANGE_RETURN_ZERO
-push constant 0
-return
 
 function Sys.init 0
 call Sys.range 2
-label WHILE
-goto WHILE
+
+label LABEL_WHILE
+goto LABEL_WHILE
+
