@@ -1,114 +1,108 @@
 function Sys.min 0
-push argument 0
-push argument 1
-lt                  
+    push argument 0
+    push argument 1
+    lt  
+    
+    if-goto MIN_CASE_A
+    goto MIN_CASE_B
 
-if-goto FIRST_MIN
-goto SECOND_MIN
+label MIN_CASE_A
+    push argument 0    
+    return 
 
-label FIRST_MIN
-push argument 0    
-return 
-
-label SECOND_MIN
-push argument 1   
-return
+label MIN_CASE_B
+    push argument 1   
+    return
 
 function Sys.max 0
-push argument 0
-push argument 1
-gt
+    push argument 0
+    push argument 1
+    gt
+    
+    if-goto MAX_CASE_A
+    goto MAX_CASE_B
 
-if-goto FIRST_MAX
-goto SECOND_MAX
+label MAX_CASE_A
+    push argument 0
+    return
 
-label FIRST_MAX
-push argument 0
-return
-
-label SECOND_MAX
-push argument 1
-return
+label MAX_CASE_B
+    push argument 1
+    return
 
 function Sys.range 2
-goto RANGE_MIN
-
-label RANGE_MIN
-push argument 0
-pop pointer 0
-push pointer 0
-push argument 1
-add
-pop local 0
-push this 0
-pop local 1
-push pointer 0
-push constant 1
-add
-pop pointer 0
-
-goto LOOP_MIN
-
-label RANGE_MAX
-push argument 0
-pop pointer 0
-push pointer 0
-push argument 1
-add
-pop local 0
-push this 0
-pop local 1
-push pointer 0
-push constant 1
-add
-pop pointer 0
-
-goto LOOP_MAX
-
-label LOOP_MIN
-push pointer 0
-push local 0 
-eq 
-if-goto LOOP_MIN_END
-push local 1
-push this 0
-call Sys.min 2
-pop local 1
-push pointer 0
-push constant 1
-add
-pop pointer 0 
-goto LOOP_MIN
-
-label LOOP_MAX
-push pointer 0
-push local 0 
-eq 
-if-goto LOOP_MAX_END
-push local 1
-push this 0
-call Sys.max 2
-pop local 1
-push pointer 0
-push constant 1
-add
-pop pointer 0 
-goto LOOP_MAX
-
-label LOOP_MIN_END
-push local 1
-goto RANGE_MAX
-
-label LOOP_MAX_END
-push local 1
-goto RANGE_END
-
-label RANGE_END
-sub
-not 
-push constant 1
-add
-return
-
+    push argument 0
+    pop pointer 0
     
+    push argument 1
+    push constant 1
+    lt
+    if-goto RANGE_RETURN_ZERO
+    
+    push this 0
+    pop local 2
+    push this 0
+    pop local 3
+    
+    push pointer 0
+    push constant 1
+    add
+    pop pointer 0
+    
+    goto FIND_MIN
 
+label FIND_MIN
+    push pointer 0
+    push argument 0
+    push argument 1
+    add
+    eq
+    if-goto FIND_MAX
+    
+    push local 2
+    push this 0
+    call Sys.min 2
+    pop local 2
+    
+    push pointer 0
+    push constant 1
+    add
+    pop pointer 0
+    
+    goto FIND_MIN
+
+label FIND_MAX
+    push argument 0
+    pop pointer 0
+    
+    goto MAX_LOOP
+
+label MAX_LOOP
+    push pointer 0
+    push argument 0
+    push argument 1
+    add
+    eq
+    if-goto COMPUTE_RANGE
+    
+    push local 3
+    push this 0
+    call Sys.max 2
+    pop local 3
+    
+    push pointer 0
+    push constant 1
+    add
+    pop pointer 0
+    
+    goto MAX_LOOP
+
+label COMPUTE_RANGE
+    push local 3
+    push local 2
+    sub
+    return
+
+label RANGE_RETURN_ZERO
+    push constant 0
+    return
