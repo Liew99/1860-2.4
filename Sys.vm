@@ -81,9 +81,14 @@ label RANGE_LOOP_MIN_MAX
 label RANGE_END
     push local 1        
     push local 0        
-    
-    sub                 \
+    sub
+    not
+    push constant 1
+    add              
     
 label RANGE_RETURN
-    return              
+    return 
+
+label WHILE
+    goto WHILE             
 
